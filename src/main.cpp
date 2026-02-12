@@ -1,24 +1,32 @@
 #include <iostream>
 #include <cpr/cpr.h>
+#include <ncurses.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
 int main() {
+  initscr();
   cpr::Response r = cpr::Get(cpr::Url{"http://localhost:8080/api/happy-hours/now"});
 
-  // Access the response details
-  std::cout << "Status Code: " << r.status_code << std::endl;
-  std::cout << "Headers:" << std::endl;
+  printw("Status Code: %ld\n", r.status_code);
+
+  printw("Headers:\n");
   for (const auto& header : r.header) {
-      std::cout << "  " << header.first << ": " << header.second << std::endl;
+      printw("  %s: %s\n" ,header.first.c_str(), header.second.c_str());
   }
-  std::cout << "Body:" << std::endl;
+  printw("Body:\n");
 
   json data = json::parse(r.text);
   std::string formatted_body_str = data.dump(4);
 
-  std::cout << formatted_body_str << std::endl;
+  printw("%s\n", formatted_body_str.c_str());
+
+  refresh();
+
+  getch();
+
+  endwin();
 
   return 0;
 }

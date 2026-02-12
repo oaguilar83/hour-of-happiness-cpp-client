@@ -11,6 +11,5 @@ cmake ..
 cmake --build .
 
 mkdir ${app_dir} && cd ${app_dir}
-mkdir libs
 cp ${target_dir}/HoHClient .
-ldd HoHClient | awk '/=>/ {print $3}' | xargs -I '{}' cp -v '{}' ./libs
+ldd HoHClient | awk '/=>/ {print $3}' | xargs -I '{}' cp -v '{}' .
